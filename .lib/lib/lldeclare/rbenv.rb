@@ -9,8 +9,8 @@ class LLDeclare::Rbenv
 
   def exec(command)
     shell = <<-EOF
-      export PATH="$HOME/.rbenv/bin:$PATH"
-      eval "$(rbenv init -)"
+      export PATH="#{@rbenv_dir}/bin:$PATH"
+      eval "$(rbenv init -)" 2>/dev/null
       #{command}
     EOF
     system(shell)
@@ -18,8 +18,8 @@ class LLDeclare::Rbenv
 
   def exec_bt(command)
     shell = <<-EOF
-      export PATH="$HOME/.rbenv/bin:$PATH"
-      eval "$(rbenv init -)"
+      export PATH="#{@rbenv_dir}/bin:$PATH"
+      eval "$(rbenv init -)" 2>/dev/null
       #{command}
     EOF
     `#{shell}`
