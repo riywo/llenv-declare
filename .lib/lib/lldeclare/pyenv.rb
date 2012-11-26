@@ -7,26 +7,6 @@ class LLDeclare::Pyenv
     @venv_dir = "./venv"
   end
 
-  def exec(command)
-    shell = <<-EOF
-      export PATH="#{@pyenv_dir}/bin:$PATH"
-      eval "$(pyenv init -)" 2>/dev/null
-      if [ -f "#{@venv_dir}/bin/activate" ]; then source "#{@venv_dir}/bin/activate"; fi
-      #{command}
-    EOF
-    system(shell)
-  end
-
-  def exec_bt(command)
-    shell = <<-EOF
-      export PATH="#{@pyenv_dir}/bin:$PATH"
-      eval "$(pyenv init -)" 2>/dev/null
-      if [ -f "#{@venv_dir}/bin/activate" ]; then source "#{@venv_dir}/bin/activate"; fi
-      #{command}
-    EOF
-    `#{shell}`
-  end
-
   def install(version)
     unless File.directory?(@pyenv_dir)
       system("git clone git://github.com/yyuu/pyenv.git #{@pyenv_dir}")
@@ -51,7 +31,26 @@ class LLDeclare::Pyenv
 
     exec("pip install -r requirements.txt")
     exec("pyenv rehash")
+  end
 
+  def exec(command)
+    system(exec_shell(command))
+  end
+
+private
+
+  def exec_shell(command)
+    shell = <<-EOF
+      export PATH="#{@pyenv_dir}/bin:$PATH"
+      eval "$(pyenv init -)" 2>/dev/null
+      if [ -f "#{@venv_dir}/bin/activate" ]; then source "#{@venv_dir}/bin/activate"; fi
+      #{command}
+    EOF
+    shell
+  end
+
+  def exec_bt(command)
+    `#{exec_shell(command)}`
   end
 
 end
