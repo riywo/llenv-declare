@@ -37,10 +37,10 @@ class LLDeclare::Perlbrew
     end
 
     if exec_bt("which cpanm") == ""
-      exec("perlbrew install-cpanm")
+      exec("curl -L http://cpanmin.us | perl - App::cpanminus")
     end
 
-    exec("cpanm -v -l local --installdeps .")
+    exec("cpanm -l local --installdeps .")
 
   end
 
