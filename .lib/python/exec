@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 lib = File.expand_path('../../.lib/lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'lldeclare/pythonbrew'
+require 'lldeclare/pyenv'
 
-pythonbrew = LLDeclare::Pythonbrew.new
-pythonbrew.exec(ARGV.join(" "))
+pyenv = LLDeclare::Pyenv.new
+pyenv.exec(ARGV.join(" "))
