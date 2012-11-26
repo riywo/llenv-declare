@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+lib = File.expand_path('../../.lib/lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'lldeclare/perlbrew'
+
+perlbrew = LLDeclare::Perlbrew.new
+perlbrew.exec(ARGV.join(" "))
