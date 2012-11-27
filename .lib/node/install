@@ -3,7 +3,6 @@ lib = File.expand_path('../../.lib/lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'lldeclare/nvm'
 
-version = File.expand_path('..', __FILE__).split("/").last.gsub(/^node-/, "") # using parent directory name
-version = "v" + version
-nvm = LLDeclare::Nvm.new
-nvm.install(version)
+version = File.expand_path('..', __FILE__).split("/").last # using parent directory name
+nvm = LLDeclare::Nvm.new(version)
+nvm.install

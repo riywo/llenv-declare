@@ -1,41 +1,35 @@
 require "lldeclare"
+require "lldeclare/base"
 
-class LLDeclare::Nvm
+class LLDeclare::Nvm < LLDeclare::Base
 
-  def initialize
+  def initialize(version)
+    super("v" + version.gsub(/^node-/, ""))
     @nvm_dir = File.join(ENV["HOME"], "nvm")
   end
 
-  def install(version)
+  def install
     unless File.directory?(@nvm_dir)
-      system("git clone git://github.com/creationix/nvm.git #{@nvm_dir}")
+      Kernel.system("git clone git://github.com/creationix/nvm.git #{@nvm_dir}")
     end
 
-    unless File.directory?(File.join(@nvm_dir, version))
-      exec(version, "nvm install #{version}")
+    unless File.directory?(File.join(@nvm_dir, @version))
+      system("nvm install #{@version}")
     end
 
-    exec(version, "npm install")
-  end
-
-  def exec(version, command)
-    system(exec_shell(version, command))
+    system("npm install")
   end
 
 private
 
-  def exec_shell(version, command)
+  def shell(command)
     shell = <<-EOF
       source "$HOME/nvm/nvm.sh"
       export PATH="./node_modules/.bin:$PATH"
-      nvm use #{version} > /dev/null
+      nvm use #{@version} > /dev/null
       #{command}
     EOF
     shell
-  end
-
-  def exec_bt(version, command)
-    `#{exec_shell(version, command)}`
   end
 
 end

@@ -3,5 +3,6 @@ lib = File.expand_path('../../.lib/lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'lldeclare/perlbrew'
 
-perlbrew = LLDeclare::Perlbrew.new
+version = File.expand_path('..', __FILE__).split("/").last # using parent directory name
+perlbrew = LLDeclare::Perlbrew.new(version)
 perlbrew.exec(ARGV.join(" "))

@@ -1,35 +1,33 @@
 require "lldeclare"
+require "lldeclare/base"
 
-class LLDeclare::Perlbrew
+class LLDeclare::Perlbrew < LLDeclare::Base
 
-  def initialize
+  def initialize(version)
+    super(version)
     @perlbrew_dir = File.join(ENV["HOME"], "perl5/perlbrew")
   end
 
-  def install(version)
+  def install
     unless File.directory?(@perlbrew_dir)
-      system("curl -kL http://install.perlbrew.pl | bash")
+      Kernel.system("curl -kL http://install.perlbrew.pl | bash")
     end
 
-    if exec_bt("echo $PERLBREW_PERL") !~ /^#{version}/
-      exec("perlbrew install #{version} -n -j 2")
-      exec("perlbrew switch #{version}")
+    if backtick("echo $PERLBREW_PERL") !~ /^#{@version}/
+      system("perlbrew install #{@version} -n -j 2")
+      system("perlbrew switch #{@version}")
     end
 
-    if exec_bt("which cpanm") == ""
-      exec("curl -L http://cpanmin.us | perl - App::cpanminus")
+    if backtick("which cpanm") == ""
+      system("curl -L http://cpanmin.us | perl - App::cpanminus")
     end
 
-    exec("cpanm -l local --installdeps .")
-  end
-
-  def exec(command)
-    system(exec_shell(command))
+    system("cpanm -l local --installdeps .")
   end
 
 private
 
-  def exec_shell(command)
+  def shell(command)
     shell = <<-EOF
       source #{@perlbrew_dir}/etc/bashrc
       export PERL5OPT="-Mlib=./local/lib/perl5"
@@ -37,10 +35,6 @@ private
       #{command}
     EOF
     shell
-  end
-
-  def exec_bt(command)
-    `#{exec_shell(command)}`
   end
 
 end

@@ -1,45 +1,43 @@
 require "lldeclare"
+require "lldeclare/base"
 
-class LLDeclare::Pyenv
+class LLDeclare::Pyenv < LLDeclare::Base
 
-  def initialize
+  def initialize(version)
+    super(version.gsub(/^python-/, ""))
     @pyenv_dir = File.join(ENV["HOME"], ".pyenv")
     @venv_dir = "./venv"
   end
 
-  def install(version)
+  def install
     unless File.directory?(@pyenv_dir)
-      system("git clone git://github.com/yyuu/pyenv.git #{@pyenv_dir}")
+      Kernel.system("git clone git://github.com/yyuu/pyenv.git #{@pyenv_dir}")
     end
 
-    exec("pyenv rehash")
+    system("pyenv rehash")
 
-    if exec_bt("pyenv version") !~ /^#{version}/
-      exec("pyenv install #{version}")
-      exec("pyenv global #{version}")
-      exec("pyenv rehash")
+    if backtick("pyenv version") !~ /^#{@version}/
+      system("pyenv install #{@version}")
+      system("pyenv global #{@version}")
+      system("pyenv rehash")
     end
 
-    if exec_bt("pyenv which virtualenv") == ""
-      exec("pip install virtualenv")
-      exec("pyenv rehash")
+    if backtick("pyenv which virtualenv") == ""
+      system("pip install virtualenv")
+      system("pyenv rehash")
     end
 
     unless File.directory?(@venv_dir)
-      exec("virtualenv --distribute #{@venv_dir}")
+      system("virtualenv --distribute #{@venv_dir}")
     end
 
-    exec("pip install -r requirements.txt")
-    exec("pyenv rehash")
-  end
-
-  def exec(command)
-    system(exec_shell(command))
+    system("pip install -r requirements.txt")
+    system("pyenv rehash")
   end
 
 private
 
-  def exec_shell(command)
+  def shell(command)
     shell = <<-EOF
       export PATH="#{@pyenv_dir}/bin:$PATH"
       eval "$(pyenv init -)" 2>/dev/null
@@ -47,10 +45,6 @@ private
       #{command}
     EOF
     shell
-  end
-
-  def exec_bt(command)
-    `#{exec_shell(command)}`
   end
 
 end

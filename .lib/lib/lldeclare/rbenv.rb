@@ -1,55 +1,49 @@
 require "lldeclare"
+require "lldeclare/base"
 
-class LLDeclare::Rbenv
+class LLDeclare::Rbenv < LLDeclare::Base
 
-  def initialize
+  def initialize(version)
+    super(version.gsub(/^ruby-/, ""))
     @rbenv_dir = File.join(ENV["HOME"], ".rbenv")
     @ruby_build_dir = File.join(@rbenv_dir, "plugins/ruby-build")
   end
 
-  def install(version)
+  def install
     unless File.directory?(@rbenv_dir)
-      system("git clone git://github.com/sstephenson/rbenv.git #{@rbenv_dir}")
+      Kernel.system("git clone git://github.com/sstephenson/rbenv.git #{@rbenv_dir}")
     end
 
     unless File.directory?(@ruby_build_dir)
-      system("git clone git://github.com/sstephenson/ruby-build.git #{@ruby_build_dir}")
+      Kernel.system("git clone git://github.com/sstephenson/ruby-build.git #{@ruby_build_dir}")
     end
 
-    exec("rbenv rehash")
+    system("rbenv rehash")
 
-    if exec_bt("rbenv version") !~ /^#{version}/
-      exec("rbenv install #{version}")
-      exec("rbenv global #{version}")
-      exec("rbenv rehash")
+    if backtick("rbenv version") !~ /^#{@version}/
+      system("rbenv install #{@version}")
+      system("rbenv global #{@version}")
+      system("rbenv rehash")
     end
 
-    if exec_bt("gem list bundler | grep bundler") == ""
-      exec("gem install bundler")
-      exec("rbenv rehash")
+    if backtick("gem list bundler | grep bundler") == ""
+      system("gem install bundler")
+      system("rbenv rehash")
     end
 
-    exec("bundle install --path=vendor/bundle")
-    exec("rbenv rehash")
-  end
-
-  def exec(command)
-    system(exec_shell(command))
+    system("bundle install --path=vendor/bundle")
+    system("rbenv rehash")
   end
 
 private
 
-  def exec_shell(command)
+  def shell(command)
     shell = <<-EOF
       export PATH="#{@rbenv_dir}/bin:$PATH"
       eval "$(rbenv init -)" 2>/dev/null
       #{command}
     EOF
     shell
-  end
-
-  def exec_bt(command)
-    `#{exec_shell(command)}`
   end
 
 end
