@@ -9,6 +9,8 @@ class LLDeclare::Pyenv < LLDeclare::Base
     @venv_dir = "./venv"
   end
 
+private
+
   def install
     unless File.directory?(@pyenv_dir)
       Kernel.system("git clone git://github.com/yyuu/pyenv.git #{@pyenv_dir}")
@@ -35,7 +37,9 @@ class LLDeclare::Pyenv < LLDeclare::Base
     system("pyenv rehash")
   end
 
-private
+  def vendorpath
+    puts File.expand_path(@venv_dir)
+  end
 
   def shell(command)
     shell = <<-EOF

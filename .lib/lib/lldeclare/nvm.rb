@@ -8,6 +8,8 @@ class LLDeclare::Nvm < LLDeclare::Base
     @nvm_dir = File.join(ENV["HOME"], "nvm")
   end
 
+private
+
   def install
     unless File.directory?(@nvm_dir)
       Kernel.system("git clone git://github.com/creationix/nvm.git #{@nvm_dir}")
@@ -20,7 +22,9 @@ class LLDeclare::Nvm < LLDeclare::Base
     system("npm install")
   end
 
-private
+  def vendorpath
+    puts File.expand_path("./node_modules")
+  end
 
   def shell(command)
     shell = <<-EOF

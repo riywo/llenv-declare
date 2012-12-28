@@ -5,4 +5,5 @@ require 'lldeclare/pyenv'
 
 version = File.expand_path('..', __FILE__).split("/").last # using parent directory name
 pyenv = LLDeclare::Pyenv.new(version)
-pyenv.install
+command = ARGV.shift
+pyenv.run(command, ARGV.join(" "))

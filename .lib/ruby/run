@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 lib = File.expand_path('../../.lib/lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'lldeclare/pyenv'
+require 'lldeclare/rbenv'
 
 version = File.expand_path('..', __FILE__).split("/").last # using parent directory name
-pyenv = LLDeclare::Pyenv.new(version)
-pyenv.exec(ARGV.join(" "))
+rbenv = LLDeclare::Rbenv.new(version)
+command = ARGV.shift
+rbenv.run(command, "bundle exec " + ARGV.join(" "))

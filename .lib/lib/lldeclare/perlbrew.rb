@@ -8,6 +8,8 @@ class LLDeclare::Perlbrew < LLDeclare::Base
     @perlbrew_dir = File.join(ENV["HOME"], "perl5/perlbrew")
   end
 
+private
+
   def install
     unless File.directory?(@perlbrew_dir)
       Kernel.system("curl -kL http://install.perlbrew.pl | bash")
@@ -25,7 +27,9 @@ class LLDeclare::Perlbrew < LLDeclare::Base
     system("cpanm -l local --installdeps .")
   end
 
-private
+  def vendorpath
+    puts File.expand_path("local")
+  end
 
   def shell(command)
     shell = <<-EOF

@@ -9,6 +9,8 @@ class LLDeclare::Rbenv < LLDeclare::Base
     @ruby_build_dir = File.join(@rbenv_dir, "plugins/ruby-build")
   end
 
+private
+
   def install
     unless File.directory?(@rbenv_dir)
       Kernel.system("git clone git://github.com/sstephenson/rbenv.git #{@rbenv_dir}")
@@ -35,7 +37,9 @@ class LLDeclare::Rbenv < LLDeclare::Base
     system("rbenv rehash")
   end
 
-private
+  def vendorpath
+    puts File.expand_path("vendor/bundle")
+  end
 
   def shell(command)
     shell = <<-EOF

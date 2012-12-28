@@ -6,12 +6,15 @@ class LLDeclare::Base
     @version = version
   end
 
-  def install
-  end
-
-  def exec(command)
-    set_env
-    Kernel.exec(shell(command))
+  def run(command, arg = nil)
+    case command
+    when "install", "vendorpath"
+      send(command.to_sym)
+    when "exec"
+      send(command.to_sym, arg)
+    else
+      raise
+    end
   end
 
 private
@@ -24,6 +27,17 @@ private
   end
 
   def shell(command)
+  end
+
+  def install
+  end
+
+  def exec(command)
+    set_env
+    Kernel.exec(shell(command))
+  end
+
+  def vendorpath
   end
 
   def system(command)

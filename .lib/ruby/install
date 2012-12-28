@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-lib = File.expand_path('../../.lib/lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'lldeclare/rbenv'
-
-version = File.expand_path('..', __FILE__).split("/").last # using parent directory name
-rbenv = LLDeclare::Rbenv.new(version)
-rbenv.install
