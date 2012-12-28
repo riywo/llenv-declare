@@ -6,6 +6,7 @@ class LLDeclare::Nvm < LLDeclare::Base
   def initialize(version)
     super("v" + version.gsub(/^node-/, ""))
     @nvm_dir = File.join(ENV["HOME"], "nvm")
+    @vendorpath = "node_modules"
   end
 
 private
@@ -22,14 +23,10 @@ private
     system("npm install")
   end
 
-  def vendorpath
-    puts File.expand_path("./node_modules")
-  end
-
   def shell(command)
     shell = <<-EOF
       source "$HOME/nvm/nvm.sh"
-      export PATH="./node_modules/.bin:$PATH"
+      export PATH="./#{@vendorpath}/.bin:$PATH"
       nvm use #{@version} > /dev/null
       #{command}
     EOF

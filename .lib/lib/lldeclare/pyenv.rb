@@ -6,7 +6,7 @@ class LLDeclare::Pyenv < LLDeclare::Base
   def initialize(version)
     super(version.gsub(/^python-/, ""))
     @pyenv_dir = File.join(ENV["HOME"], ".pyenv")
-    @venv_dir = "./venv"
+    @vendorpath = "venv"
   end
 
 private
@@ -30,22 +30,18 @@ private
     end
 
     unless File.directory?(@venv_dir)
-      system("virtualenv --distribute #{@venv_dir}")
+      system("virtualenv --distribute ./#{@vendorpath}")
     end
 
     system("pip install -r requirements.txt")
     system("pyenv rehash")
   end
 
-  def vendorpath
-    puts File.expand_path(@venv_dir)
-  end
-
   def shell(command)
     shell = <<-EOF
       export PATH="#{@pyenv_dir}/bin:$PATH"
       eval "$(pyenv init -)" 2>/dev/null
-      if [ -f "#{@venv_dir}/bin/activate" ]; then source "#{@venv_dir}/bin/activate"; fi
+      if [ -f "#{@vendorpath}/bin/activate" ]; then source "#{@vendorpath}/bin/activate"; fi
       #{command}
     EOF
     shell

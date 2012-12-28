@@ -7,6 +7,7 @@ class LLDeclare::Rbenv < LLDeclare::Base
     super(version.gsub(/^ruby-/, ""))
     @rbenv_dir = File.join(ENV["HOME"], ".rbenv")
     @ruby_build_dir = File.join(@rbenv_dir, "plugins/ruby-build")
+    @vendorpath = "vendor/bundle"
   end
 
 private
@@ -33,12 +34,8 @@ private
       system("rbenv rehash")
     end
 
-    system("bundle install --path=vendor/bundle")
+    system("bundle install --path=#{@vendorpath}")
     system("rbenv rehash")
-  end
-
-  def vendorpath
-    puts File.expand_path("vendor/bundle")
   end
 
   def shell(command)

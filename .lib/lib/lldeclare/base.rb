@@ -38,6 +38,7 @@ private
   end
 
   def vendorpath
+    puts @vendorpath
   end
 
   def system(command)

@@ -6,6 +6,7 @@ class LLDeclare::Perlbrew < LLDeclare::Base
   def initialize(version)
     super(version)
     @perlbrew_dir = File.join(ENV["HOME"], "perl5/perlbrew")
+    @vendorpath = "local"
   end
 
 private
@@ -24,18 +25,14 @@ private
       system("curl -L http://cpanmin.us | perl - App::cpanminus")
     end
 
-    system("cpanm -l local --installdeps .")
-  end
-
-  def vendorpath
-    puts File.expand_path("local")
+    system("cpanm -l #{@vendorpath} --installdeps .")
   end
 
   def shell(command)
     shell = <<-EOF
       source #{@perlbrew_dir}/etc/bashrc
-      export PERL5OPT="-Mlib=./local/lib/perl5"
-      export PATH="./local/bin:$PATH"
+      export PERL5OPT="-Mlib=./#{@vendorpath}/lib/perl5"
+      export PATH="./#{@vendorpath}/bin:$PATH"
       #{command}
     EOF
     shell
