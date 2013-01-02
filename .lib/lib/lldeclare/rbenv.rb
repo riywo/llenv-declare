@@ -39,6 +39,9 @@ private
   end
 
   def shell(command)
+    ENV.each do |k, v|
+      ENV.delete(k) if k =~ /^RBENV/
+    end
     shell = <<-EOF
       export PATH="#{@rbenv_dir}/bin:$PATH"
       eval "$(rbenv init -)" 2>/dev/null
